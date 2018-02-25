@@ -29,18 +29,18 @@ namespace WebApplication1.Controllers
             return  Ok(employee);
         }
 
-        ////POST 
-        //public IHttpActionResult PostEmployee(int ID,[FromBody]Employee employeeToAdd)
-        //{
-        //    var employee = employees.FirstOrDefault(em => em.ID == ID);
-        //    if (employee == null)//如果已經有此項目就不增加
-        //    {
-        //        employees.Add(employeeToAdd);
-        //        return Ok(employee);
-        //    }
-        //    else return null;
+        //POST 
+        public IHttpActionResult PostEmployee(int ID, [FromBody]Employee employeeToAdd)
+        {
+            var employee = employees.FirstOrDefault(em => em.ID == ID);
+            if (employee == null)//如果已經有此項目就不增加
+            {
+                employees.Add(employeeToAdd);
+                return Ok(employeeToAdd);
+            }
+            else return null;
 
-        //}
+        }
 
         // POST api/values  
         public void Post([FromBody]Employee value)
@@ -76,7 +76,7 @@ namespace WebApplication1.Controllers
             else
             {
                 employees[ID] = employeeToPut;
-                return NotFound() ;
+                return Ok(employeeToPut) ;
             }
            
         }
