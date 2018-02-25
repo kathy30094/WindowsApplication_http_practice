@@ -29,17 +29,23 @@ namespace WebApplication1.Controllers
             return  Ok(employee);
         }
 
-        //POST 
-        public IHttpActionResult PostEmployee(int ID,[FromBody]Employee employeeToAdd)
+        ////POST 
+        //public IHttpActionResult PostEmployee(int ID,[FromBody]Employee employeeToAdd)
+        //{
+        //    var employee = employees.FirstOrDefault(em => em.ID == ID);
+        //    if (employee == null)//如果已經有此項目就不增加
+        //    {
+        //        employees.Add(employeeToAdd);
+        //        return Ok(employee);
+        //    }
+        //    else return null;
+
+        //}
+
+        // POST api/values  
+        public void Post([FromBody]Employee value)
         {
-            var employee = employees.FirstOrDefault(em => em.ID == ID);
-            if (employee == null)//如果已經有此項目就不增加
-            {
-                employees.Add(employeeToAdd);
-                return Ok(employee);
-            }
-            else return null;
-            
+            employees.Add(value);
         }
 
         //Delete
