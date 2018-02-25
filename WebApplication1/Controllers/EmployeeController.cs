@@ -12,13 +12,13 @@ namespace WebApplication1.Controllers
     {
         static List<Employee> employees = new List<Employee>();
 
-        //GET     /api/Employee
+        //show all employees   //GET     /api/Employee
         public IEnumerable<Employee> GetAllEmployees()
         {
             return employees;
         }
 
-        //GET     /api/Employee/{id}
+        //show one employee by ID  //GET     /api/Employee/{id}
         public IHttpActionResult GetEmployeeByID(int ID)
         {
             var employee = employees.FirstOrDefault(em => em.ID == ID); ///Employee em
@@ -29,6 +29,7 @@ namespace WebApplication1.Controllers
             return  Ok(employee);
         }
 
+        //POST
         public void PostEmployee([FromBody] Employee employeeToAdd)
         {
             bool duplicate = false;
@@ -64,19 +65,15 @@ namespace WebApplication1.Controllers
         }
 
         // PUT
-        public IHttpActionResult PutEmployee(int ID, [FromBody] Employee employeeToPut)
+        public void PutEmployee(int id,[FromBody]Employee employeeToPut)
         {
-            var employee = employees.FirstOrDefault(em => em.ID == ID);
-            if (employee == null)
+            for (int i = 0; i < employees.Count; i++)
             {
-                return null;
+                if (employees[i].ID == id)
+                {
+                    employees[i] = employeeToPut;
+                }
             }
-            else
-            {
-                employees[ID] = employeeToPut;
-                return Ok(employeeToPut) ;
-            }
-           
         }
 
 
