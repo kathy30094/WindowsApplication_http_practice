@@ -29,24 +29,22 @@ namespace WebApplication1.Controllers
             return  Ok(employee);
         }
 
-        //POST 
-        public IHttpActionResult PostEmployee(int ID, [FromBody]Employee employeeToAdd)
+        public void PostEmployee([FromBody] Employee employeeToAdd)
         {
-            var employee = employees.FirstOrDefault(em => em.ID == ID);
-            if (employee == null)//如果已經有此項目就不增加
+            bool duplicate = false;
+            foreach (var employee in employees)
+            {
+                if (employee.ID == employeeToAdd.ID)
+                {
+                    duplicate = true;
+                }
+            }
+            if (duplicate == false)
             {
                 employees.Add(employeeToAdd);
-                return Ok(employeeToAdd);
             }
-            else return null;
-
         }
-
-        // POST api/values  
-        public void Post([FromBody]Employee value)
-        {
-            employees.Add(value);
-        }
+       
 
         //Delete
         public IHttpActionResult Delete(int ID)
