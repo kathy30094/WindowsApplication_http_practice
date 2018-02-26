@@ -10,18 +10,18 @@ namespace WebApplication1.Controllers
 {
     public class EmployeeController : ApiController
     {
-        static List<Employee> employees = new List<Employee>();
+        static List<Employee> employeeList = new List<Employee>();
 
         //show all employees   //GET     /api/Employee
         public IEnumerable<Employee> GetAllEmployees()
         {
-            return employees;
+            return employeeList;
         }
 
         //show one employee by ID  //GET     /api/Employee/{id}
         public IHttpActionResult GetEmployeeByID(int ID)
         {
-            var employee = employees.FirstOrDefault(em => em.ID == ID); ///Employee em
+            var employee = employeeList.FirstOrDefault(em => em.ID == ID); ///Employee em
             if (employee == null)
             {
                 return NotFound();
@@ -33,7 +33,7 @@ namespace WebApplication1.Controllers
         public void PostEmployee([FromBody] Employee employeeToAdd)
         {
             bool duplicate = false;
-            foreach (var employee in employees)
+            foreach (var employee in employeeList)
             {
                 if (employee.ID == employeeToAdd.ID)
                 {
@@ -42,24 +42,23 @@ namespace WebApplication1.Controllers
             }
             if (duplicate == false)
             {
-                employees.Add(employeeToAdd);
+                employeeList.Add(employeeToAdd);
             }
         }
-       
 
         //Delete
         public IHttpActionResult Delete(int ID)
         {
-            var employee = employees.FirstOrDefault(em => em.ID == ID);
+            var employee = employeeList.FirstOrDefault(em => em.ID == ID);
             if (employee == null)//如果有此項目才做delete
             {
                 return NotFound();
             }
             else
             {
-                int IDindex = employees.FindIndex(em => em.ID == ID);
-                employees.RemoveAt(IDindex);
-                return null;
+                int IDindex = employeeList.FindIndex(em => em.ID == ID);
+                employeeList.RemoveAt(IDindex);
+                return Ok(employee);
             }
            
         }
@@ -67,25 +66,13 @@ namespace WebApplication1.Controllers
         // PUT
         public void PutEmployee(int id,[FromBody]Employee employeeToPut)
         {
-            for (int i = 0; i < employees.Count; i++)
+            for (int i = 0; i < employeeList.Count; i++)
             {
-                if (employees[i].ID == id)
+                if (employeeList[i].ID == id)
                 {
-                    employees[i] = employeeToPut;
+                    employeeList[i] = employeeToPut;
                 }
             }
         }
-
-
-        ///think after : how can find by name?
-        //public IHttpActionResult GetEmployeeByName(string Name)
-        //{
-        //    var employee = employees.FirstOrDefault(em => em.name == Name); ///Employee em
-        //    if (employee == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return Ok(employee);
-        //}
     }
 }
