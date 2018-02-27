@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Web.Http;
+using System.Web.Http; 
 using WebApplication1.Models;
+using WebApplication1.Code;
 
 namespace WebApplication1.Controllers
 {
@@ -12,9 +13,16 @@ namespace WebApplication1.Controllers
     {
         static List<Employee> employeeList = new List<Employee>();
 
+        private DAOFunctions _DAOFunction  = new DAOFunctions();
+
         //show all employees   //GET     /api/Employee
         public IEnumerable<Employee> GetAllEmployees()
         {
+            List<Employee> employeeList = new List<Employee>();
+            ReturnValue returnValue = _DAOFunction.GetAllEmployeeFromDB(ref employeeList);
+            ///此處需要從DB撈出所有employee的資料
+            ///存成DataTable，轉成List
+            ///return出去
             return employeeList;
         }
 
