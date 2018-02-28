@@ -14,6 +14,31 @@ namespace WebApplication1.Code
         #region Stored Procedure Name
         private class StoredProcedure
         {
+            public const string ADD_EMPLOYEE = "AddEmployee";
+            /*AddEmployee SP
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE AddEmployee
+@id int,
+@Name nvarchar(15),
+@Sex char(1),
+@IsAdd nchar(1) ='' output
+AS
+if NOT EXISTS(select * from Company.dbo.Employee where Company.dbo.Employee.ID=@id)
+BEGIN
+	insert into Company.dbo.Employee (ID,Name,Sex) values (@id,@Name,@Sex)
+END
+else
+BEGIN
+	set @IsAdd='F'
+	
+END
+GO
+
+
+**/
 
             public const string GET_EMPLOYEE = "ReturnAllEmployees";
             /*ReturnAllEmployee SP
@@ -74,6 +99,29 @@ GO
              * */
 
             public const string DELETE_EMPLOYEE = "DeleteEmployee";
+            /* DeleteEmployee SP
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+-- =============================================
+-- Author:		<Author,,Name>
+-- Create date: <Create Date,,>
+-- Description:	<Description,,>
+-- =============================================
+CREATE PROCEDURE DeleteEmployee
+@id int,
+@IsDelete nchar(1) output
+AS
+if EXISTS(select * from Company.dbo.Employee where Company.dbo.Employee.ID=@id)
+BEGIN
+delete Company.dbo.Employee where Company.dbo.Employee.ID=@id
+END
+else
+set @IsDelete='F'
+GO
+**/
+
         }//end StoredProcedure
         #endregion
         //public string DB_ConnctString = "Server=RD-006;Database=Company;User ID=sa;Password=t86-t86-";LAPTOP-7BPU7R88
@@ -224,7 +272,6 @@ GO
                 }//end if
             }
             catch (Exception Ex)//資料庫連接失敗
-
             {
                 _Exception = Ex;
                 Ret = ReturnValue.EXCEPTION_ERROR;
@@ -333,8 +380,7 @@ GO
                 //連接成功則為 0 
                 int DBReturn = -1;
                 DBReturn = _DAO.ExecuteReaderSingleRow(ref ob , StoredProcedure.SEARCH_EMPLOYEE, ref sqlParams, true, true);
-                // int ExecuteReaderSingleRow(ref SqlDataReader Dr, string Sqlcmd, ref SqlParameter[] Sqlparams, bool IsStoredProcedure, bool IsCloseConn);
-
+               
                 if (DBReturn != 0)//失敗，找不到Stored Procedure
                 {
                     Ret = ReturnValue.DB_EXECUTE_ERROR;
@@ -377,6 +423,66 @@ GO
                 LogUtility.ErrorLog(LogLevel.Low, logMsg);
             } //end catch
             return Ret;
-        }//end GetAllEmployeeFromDB
+        }//end SearchEmployeeByID
+
+        public ReturnValue AddEmployee(ref Employee employee)
+        {
+            ReturnValue Ret = ReturnValue.NO_EXECUTE_RETURN;
+
+            try //conncet to DB
+            {
+
+                SqlParameter IsAdd = new SqlParameter("@IsAdd", SqlDbType.NChar, 1);
+                IsAdd.Direction = ParameterDirection.Output;
+
+                SqlParameter[] sqlParams = new SqlParameter[]
+                 {
+                    new SqlParameter("@ID",SqlDbType.Int),
+                    new SqlParameter("@Name",SqlDbType.NVarChar,15),
+                    new SqlParameter("@Sex",SqlDbType.Char,1),
+                    IsAdd
+                 };
+                int i = 0;
+                sqlParams[i++].Value = employee.ID;
+                sqlParams[i++].Value = employee.name;
+                sqlParams[i++].Value = employee.sex;
+
+                //連接資料庫
+                _DAO = new DbAccessOperator(DB_ConnctString);
+
+                //連接成功則為 0 
+                int DBReturn = -1;
+                DBReturn = _DAO.ExecuteNonQuery(StoredProcedure.ADD_EMPLOYEE, ref sqlParams, true, true);
+               
+                if (DBReturn != 0)//失敗，找不到Stored Procedure
+                {
+                    Ret = ReturnValue.DB_EXECUTE_ERROR;
+                    _Exception = _DAO.GetException();
+                    string LogMessage = String.Format(LogFormat.DB_EXCEPTION, ReturnValue.DB_EXCEPTION, DB_ConnctString, StoredProcedure.SEARCH_EMPLOYEE, _Exception.Message, _Exception.StackTrace);
+                    LogMessage += string.Format("\tParams[{0}]", "");
+                    LogUtility.ErrorLog(LogLevel.Low, LogMessage);
+                }
+                else //連接成功，並找到DB的Stored Procedure
+                {
+                    if (IsAdd.Value.ToString() == "F")
+                    {
+                        //新增資料失敗
+                        Ret = ReturnValue.DB_UPDATE_FAILURE;
+                    }
+                    else
+                    {
+                        Ret = ReturnValue.OK;
+                    }// end if
+                }//end if
+            }//end try
+            catch (Exception Ex)//資料庫連接過程失敗
+            {
+                string logMsg = string.Format(LogFormat.EXCEPTION, ReturnValue.EXCEPTION_ERROR, Ex.Message, Ex.StackTrace);
+                LogUtility.ErrorLog(LogLevel.Low, logMsg);
+            } //end catch
+            return Ret;
+        }
+
+
     }
 }

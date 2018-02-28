@@ -42,18 +42,19 @@ namespace WebApplication1.Controllers
         //POST   add employee
         public void PostEmployee([FromBody] Employee employeeToAdd)
         {
-            bool duplicate = false;
-            foreach (var employee in employeeList)
-            {
-                if (employee.ID == employeeToAdd.ID)
-                {
-                    duplicate = true;
-                }
-            }
-            if (duplicate == false)
-            {
-                employeeList.Add(employeeToAdd);
-            }
+            _DAOFunction.AddEmployee(ref employeeToAdd);
+            //bool duplicate = false;
+            //foreach (var employee in employeeList)
+            //{
+            //    if (employee.ID == employeeToAdd.ID)
+            //    {
+            //        duplicate = true;
+            //    }
+            //}
+            //if (duplicate == false)
+            //{
+            //    employeeList.Add(employeeToAdd);
+            //}
         }
 
         //Delete
