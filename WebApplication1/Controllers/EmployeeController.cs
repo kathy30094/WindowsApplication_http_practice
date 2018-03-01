@@ -11,20 +11,21 @@ namespace WebApplication1.Controllers
 {
     public class EmployeeController : ApiController
     {
-        static List<Employee> employeeList = new List<Employee>();
+        private static List<Employee> employeeList = new List<Employee>();
 
-        private DAOFunctions _DAOFunction  = new DAOFunctions();
+        private static  DAOFunctions _DAOFunction  = new DAOFunctions();
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////why static thread
 
         ///GET  show all employees   /api/Employee
         public IEnumerable<Employee> GetAllEmployees()
         {
             List<Employee> employeeList = new List<Employee>();
-            ReturnValue Ret = _DAOFunction.GetAllEmployeeFromDB(ref employeeList);
             ///此處需要從DB撈出所有employee的資料
             ///存成DataTable，轉成List
             ///return出去
+            ReturnValue Ret = _DAOFunction.GetAllEmployeeFromDB(ref employeeList);
             return employeeList;
-        }
+        }  // end GetAllEmployee
 
         ///GET    show one employee by ID   /api/Employee/{id}
         public IHttpActionResult GetEmployeeByID(int ID)
@@ -37,45 +38,25 @@ namespace WebApplication1.Controllers
                 return NotFound();
             }
             return Ok(employee);
-        }
+        } // end GetEmployeeByID
 
         //POST   add employee
         public void PostEmployee([FromBody] Employee employeeToAdd)
         {
             _DAOFunction.AddEmployee(ref employeeToAdd);
-            //bool duplicate = false;
-            //foreach (var employee in employeeList)
-            //{
-            //    if (employee.ID == employeeToAdd.ID)
-            //    {
-            //        duplicate = true;
-            //    }
-            //}
-            //if (duplicate == false)
-            //{
-            //    employeeList.Add(employeeToAdd);
-            //}
-        }
+        } // end PostEmployee
 
         //Delete
         public void Delete(int ID)
         {
             ReturnValue Ret = new ReturnValue();
             Ret = _DAOFunction.DeleteEmployee(ID);
-        }
+        } // end Delete
 
         // PUT  update employee
         public void PutEmployee(int id,[FromBody]Employee employeeToPut)
         {
-
             ReturnValue returnValue = _DAOFunction.UpdateEmployee(employeeToPut);
-            //for (int i = 0; i < employeeList.Count; i++)
-            //{
-            //    if (employeeList[i].ID == id)
-            //    {
-            //        employeeList[i] = employeeToPut;
-            //    }
-            //}
-        }
+        } // end PutEmployee
     }
 }

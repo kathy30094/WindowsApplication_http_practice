@@ -9,7 +9,7 @@ using System.Data.SqlClient;
 
 namespace WebApplication1.Code
 {
-    public class DAOFunctions : DAOBase
+    public class DAOFunctions  :  DAOBase
     {
         #region Stored Procedure Name
         private class StoredProcedure
@@ -119,33 +119,38 @@ GO
         }//end StoredProcedure
         #endregion
 
-        public string DB_ConnctString = "Server=RD-006;Database=Company;User ID=sa;Password=t86-t86-";
+        ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// /webconfig 外部讀取
+        public string DB_ConnctString = WebConfUtility.GetConnString("ConnectionRD006");  /// <summary>
         //public string DB_ConnctString = "Server=LAPTOP-7BPU7R88;Database=Company;User ID=sa;Password=t86-t86-";
 
         #region  enum  _EmployeeField 欄位引索+
-
         private enum _EmployeeFields
         {
             ID = 0,
             Name,
             Sex,
-        }//end _EmployeeFields
+        }// end _EmployeeFields
         #endregion
 
+        /// <summary>
+        /// 刪除指定的Employee
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
         public ReturnValue DeleteEmployee(int ID)
         {
             ReturnValue Ret = ReturnValue.NO_EXECUTE_RETURN;
 
             try
             {
-                //設定sql參數，變數型態nchar(1),參數型別為輸出
+                // 設定sql參數，變數型態nchar(1),參數型別為輸出
                 SqlParameter IsDelete = new SqlParameter("@IsDelete", SqlDbType.NChar, 1);
                 IsDelete.Direction = ParameterDirection.Output;
 
                 //建置Sqlparameter array並設置其內各parameter的格式，並把前面設置的IsUpdate放進去
                 SqlParameter[] sqlParams = new SqlParameter[]
                 {
-                    new SqlParameter("@ID",SqlDbType.Int),
+                    new SqlParameter("@ID",  SqlDbType.Int),
                     IsDelete
                 };
                 //填入值
@@ -202,10 +207,16 @@ GO
             {
                 if (_DAO != null)
                     _DAO.Dispose();
-            }//end try catch
+            } // end try catch
+
             return Ret;
         }//end UpdateUser
 
+        /// <summary>
+        /// 更新Employee 資料
+        /// </summary>
+        /// <param name="employee"></param>
+        /// <returns></returns>
         public ReturnValue UpdateEmployee(Employee employee)
         {
             ReturnValue Ret = ReturnValue.NO_EXECUTE_RETURN;
@@ -287,6 +298,11 @@ GO
             return Ret;
         }//end UpdateUser
 
+        /// <summary>
+        /// 獲取所有Employee的List
+        /// </summary>
+        /// <param name="employeeList"></param>
+        /// <returns></returns>
         public ReturnValue GetAllEmployeeFromDB(ref List<Employee> employeeList)
         {
             ReturnValue Ret = ReturnValue.NO_EXECUTE_RETURN;
@@ -357,6 +373,12 @@ GO
             return Ret;
         }//end GetAllEmployeeFromDB
 
+        /// <summary>
+        /// 由 ID尋找Employee的資料
+        /// </summary>
+        /// <param name="employee"></param>
+        /// <param name="ID"></param>
+        /// <returns></returns>
         public ReturnValue SearchEmployeeByID(ref Employee employee,int ID)
         {
             ReturnValue Ret = ReturnValue.NO_EXECUTE_RETURN;
@@ -422,6 +444,11 @@ GO
             return Ret;
         }//end SearchEmployeeByID
 
+        /// <summary>
+        /// 新增Employee
+        /// </summary>
+        /// <param name="employee"></param>
+        /// <returns></returns>
         public ReturnValue AddEmployee(ref Employee employee)
         {
             ReturnValue Ret = ReturnValue.NO_EXECUTE_RETURN;
