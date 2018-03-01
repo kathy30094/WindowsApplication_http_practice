@@ -55,17 +55,11 @@ GO
              * */
 
             public const string SEARCH_EMPLOYEE = "SearchEmployee";
-
             /* SearchEmployee SP
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
 GO
--- =============================================
--- Author:		<Author,,Name>
--- Create date: <Create Date,,>
--- Description:	<Description,,>
--- =============================================
 CREATE PROCEDURE UpdateEmployee
 	@id int
 AS
@@ -80,11 +74,11 @@ GO
 GO
 SET QUOTED_IDENTIFIER ON
 GO
-CREATE PROCEDURE SearchEmployee
+CREATE PROCEDURE UpdateEmployee
 	@id int,
 	@Name nvarchar(15),
 	@Sex char(1),
-	@IsUpdated nchar(1)=''
+	@IsUpdated nchar(1)='' output
 AS
 
 if EXISTS (SELECT * FROM Company.dbo.Employee WHERE Company.dbo.Employee.ID = @id)
@@ -124,9 +118,12 @@ GO
 
         }//end StoredProcedure
         #endregion
-        //public string DB_ConnctString = "Server=RD-006;Database=Company;User ID=sa;Password=t86-t86-";LAPTOP-7BPU7R88
-        public string DB_ConnctString = "Server=LAPTOP-7BPU7R88;Database=Company;User ID=sa;Password=t86-t86-";
+
+        public string DB_ConnctString = "Server=RD-006;Database=Company;User ID=sa;Password=t86-t86-";
+        //public string DB_ConnctString = "Server=LAPTOP-7BPU7R88;Database=Company;User ID=sa;Password=t86-t86-";
+
         #region  enum  _EmployeeField 欄位引索+
+
         private enum _EmployeeFields
         {
             ID = 0,
